@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.NavHostFragment
 import io.github.thang86.codesample.R
@@ -20,72 +21,47 @@ import io.github.thang86.codesample.databinding.GameFragmentBinding
 class GameFragment : Fragment() {
 
 
-
     private lateinit var binding: GameFragmentBinding
 
     private lateinit var gameViewModel: GameViewModel
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
 
         // Inflate view and obtain an instance of the binding class
         binding = DataBindingUtil.inflate(
-                inflater,
-                R.layout.game_fragment,
-                container,
-                false
+            inflater,
+            R.layout.game_fragment,
+            container,
+            false
         )
 
         Log.i("GameFragment", "Called ViewModelProvider.get")
         gameViewModel = ViewModelProvider(this).get(GameViewModel::class.java)
+        binding.viewModel = gameViewModel
+        binding.lifecycleOwner = this
 
+        gameViewModel.eventGameFinish.observe(viewLifecycleOwner, { hasEndGame ->
+            if (hasEndGame) {
+                gameFinish()
+            }
+        })
 
-
-        binding.correctButton.setOnClickListener { onCorrect() }
-        binding.skipButton.setOnClickListener { onSkip() }
-
-        binding.endGameButton.setOnClickListener { onEndGame() }
-        updateScoreText()
-        updateWordText()
         return binding.root
 
     }
 
-    private fun onEndGame() {
-
-        gameFinish()
-    }
 
     private fun gameFinish() {
         Toast.makeText(activity, "Game has just finished", Toast.LENGTH_LONG).show()
         val action = GameFragmentDirections.actionGameToScore()
-        action.score = gameViewModel.score
+        action.score = gameViewModel.score.value ?: 0
         NavHostFragment.findNavController(this).navigate(action)
+        gameViewModel.onGameCompleted()
     }
 
-    /** Methods for button click handlers **/
-
-    private fun onSkip() {
-       gameViewModel.onSkip()
-        updateWordText()
-        updateScoreText()
-    }
-
-    private fun onCorrect() {
-        gameViewModel.onCorrect()
-        updateWordText()
-        updateScoreText()
-    }
-
-    /** Methods for updating the UI **/
-
-    private fun updateWordText() {
-        binding.wordText.text = gameViewModel.word
-    }
-
-    private fun updateScoreText() {
-        binding.scoreText.text = gameViewModel.score.toString()
-    }
 
 
 }
