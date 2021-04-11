@@ -96,7 +96,7 @@ class GameViewModel : ViewModel() {
         Log.d("GameViewModel", "GameViewModel onCleared!")
     }
 
-    private fun onGameFinish() {
+     fun onGameFinish() {
         _eventGameFinish.value = true
     }
 

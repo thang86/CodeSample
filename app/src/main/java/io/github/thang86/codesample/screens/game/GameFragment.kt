@@ -40,17 +40,9 @@ class GameFragment : Fragment() {
 
         Log.i("GameFragment", "Called ViewModelProvider.get")
         gameViewModel = ViewModelProvider(this).get(GameViewModel::class.java)
+        binding.viewModel = gameViewModel
+        binding.lifecycleOwner = this
 
-
-
-        binding.correctButton.setOnClickListener { onCorrect() }
-        binding.skipButton.setOnClickListener { onSkip() }
-
-        binding.endGameButton.setOnClickListener { onEndGame() }
-
-
-        updateScoreText()
-        updateWordText()
         gameViewModel.eventGameFinish.observe(viewLifecycleOwner, { hasEndGame ->
             if (hasEndGame) {
                 gameFinish()
@@ -61,10 +53,6 @@ class GameFragment : Fragment() {
 
     }
 
-    private fun onEndGame() {
-
-        gameFinish()
-    }
 
     private fun gameFinish() {
         Toast.makeText(activity, "Game has just finished", Toast.LENGTH_LONG).show()
@@ -74,37 +62,6 @@ class GameFragment : Fragment() {
         gameViewModel.onGameCompleted()
     }
 
-    /** Methods for button click handlers **/
-
-    private fun onSkip() {
-        gameViewModel.onSkip()
-        updateWordText()
-        updateScoreText()
-    }
-
-    private fun onCorrect() {
-        gameViewModel.onCorrect()
-        updateWordText()
-        updateScoreText()
-    }
-
-    /** Methods for updating the UI **/
-
-    private fun updateWordText() {
-        //Case 1
-        // binding.wordText.text = gameViewModel.word.value
-        // Case2
-        gameViewModel.word.observe(viewLifecycleOwner, { _word ->
-            binding.wordText.text = _word.toString()
-        })
-    }
-
-    private fun updateScoreText() {
-//        binding.scoreText.text = gameViewModel.score.value.toString()
-        gameViewModel.score.observe(viewLifecycleOwner, Observer { newScore ->
-            binding.scoreText.text = newScore.toString()
-        })
-    }
 
 
 }
