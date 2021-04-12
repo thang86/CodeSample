@@ -53,6 +53,17 @@
             tools:text="&quot;Tuna&quot;" />
 
         <TextView
+            android:id="@+id/text_hint"
+            android:layout_width="wrap_content"
+            tools:text="lslss"
+            android:layout_marginBottom="20dp"
+            android:text="@{viewModel.hintText}"
+            app:layout_constraintBottom_toTopOf="@+id/timer_text"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_height="wrap_content"/>
+
+        <TextView
             android:id="@+id/timer_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -62,6 +73,7 @@
             android:fontFamily="sans-serif"
             android:textColor="@color/grey_text_color"
             android:textSize="14sp"
+            android:text="@{viewModel.currentTimeString.toString()}"
             android:textStyle="normal"
             app:layout_constraintBottom_toTopOf="@+id/score_text"
             app:layout_constraintEnd_toEndOf="parent"
